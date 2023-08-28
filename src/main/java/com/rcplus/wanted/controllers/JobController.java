@@ -11,6 +11,8 @@ import com.rcplus.wanted.configs.BaseResponse;
 import com.rcplus.wanted.models.JobField;
 import com.rcplus.wanted.models.JobSpecialty;
 
+import static com.rcplus.wanted.configs.BaseResponseStatus.*;
+
 @RestController
 public class JobController {
 
@@ -20,20 +22,13 @@ public class JobController {
         for (JobField value : JobField.values()) {
             data.add(value.getName());
         }
-        return BaseResponse.builder()
-            .result("success")
-            .message("직업군 목록을 조회하였습니다.")
-            .data(data)
-            .build();
+        return new BaseResponse(data);
     }
 
     @GetMapping("/specialties")
     public BaseResponse getSpecialties(@RequestParam(name = "field") String field) {
         if (field == null) {
-            return BaseResponse.builder()
-                .result("failure")
-                .message("'field' 쿼리가 없습니다.")
-                .build();
+            return new BaseResponse(REQUEST_ERROR);
         }
         JobField jobField = null;
         for (JobField value : JobField.values()) {
@@ -43,10 +38,7 @@ public class JobController {
             }
         }
         if (jobField == null) {
-            return BaseResponse.builder()
-                .result("failure")
-                .message("'"+ field +"' 직무가 존재하지 않습니다.")
-                .build();
+            return new BaseResponse(REQUEST_ERROR);
         }
         List<String> data = new ArrayList<>();
         for (JobSpecialty value : JobSpecialty.values()) {
@@ -54,11 +46,7 @@ public class JobController {
                 data.add(value.getName());
             }
         }
-        return BaseResponse.builder()
-            .result("success")
-            .message("직업군 목록을 조회하였습니다.")
-            .data(data)
-            .build();
+        return new BaseResponse(data);
     }
     
 }

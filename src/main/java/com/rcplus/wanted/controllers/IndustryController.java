@@ -18,11 +18,7 @@ public class IndustryController {
         for (Industry value : Industry.values()) {
             data.add(value.getName());
         };
-        return BaseResponse.builder()
-            .result("success")
-            .message("산업군 목록을 조회하였습니다.")
-            .data(data)
-            .build();
+        return new BaseResponse(data);
     }
     
 }

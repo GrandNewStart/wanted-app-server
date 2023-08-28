@@ -11,6 +11,8 @@ import com.rcplus.wanted.configs.BaseResponse;
 import com.rcplus.wanted.models.Nation;
 import com.rcplus.wanted.models.Region;
 
+import static com.rcplus.wanted.configs.BaseResponseStatus.*;
+
 @RestController
 public class NationController {
     
@@ -20,11 +22,7 @@ public class NationController {
         for (Nation value : Nation.values()) {
             data.add(value.getName());
         }
-        return BaseResponse.builder()
-            .result("success")
-            .message("국가 목록 조회에 성공하였습ㄴ다.")
-            .data(data)
-            .build();
+        return new BaseResponse(data);
     }
 
     @GetMapping("/regions")
@@ -37,10 +35,7 @@ public class NationController {
             }
         }
         if (_nation == null) {
-            return BaseResponse.builder()
-            .result("failure")
-            .message("'" + nation + "'에 해당하는 국가를 찾을 수 없습니다.")
-            .build();
+            return new BaseResponse(REQUEST_ERROR);
         }
         List<String> data = new ArrayList<>();
         for (Region value : Region.values()) {
@@ -48,11 +43,7 @@ public class NationController {
                 data.add(value.getName());
             }
         }
-        return BaseResponse.builder()
-            .result("success")
-            .message("지역 목록 조회에 성공하였습ㄴ다.")
-            .data(data)
-            .build();
+        return new BaseResponse(data);
     }
 
 }

@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rcplus.wanted.configs.BaseException;
 import com.rcplus.wanted.configs.BaseResponse;
 import com.rcplus.wanted.dtos.GetUserInfoDto;
+import com.rcplus.wanted.dtos.GetUserSpecialtiesDto;
 import com.rcplus.wanted.dtos.LogInDto;
 import com.rcplus.wanted.dtos.RefreshTokenDto;
 import com.rcplus.wanted.dtos.SignOutDto;
 import com.rcplus.wanted.dtos.SignUpDto;
+import com.rcplus.wanted.dtos.UpdateSpecialtiesDto;
 import com.rcplus.wanted.dtos.UpdateUserInfoDto;
 import com.rcplus.wanted.services.UserService;
 
@@ -63,6 +65,26 @@ public class UserController {
     public BaseResponse deleteUser(@RequestBody SignOutDto.Request request) {
         try {
             this.userService.deleteUser(request);
+            return new BaseResponse(SUCCESS);
+        } catch (BaseException e) {
+            return new BaseResponse(e.getStatus());
+        }
+    }
+
+    @GetMapping("/users/specialties")
+    public BaseResponse getUserSpecialties(@RequestHeader HttpHeaders headers) {
+        try {
+            GetUserSpecialtiesDto.Response data = this.userService.getUserSpecialties(headers);
+            return new BaseResponse(data);
+        } catch (BaseException e) {
+            return new BaseResponse(e.getStatus());
+        }
+    }
+
+    @PostMapping("/users/specialties")
+    public BaseResponse updateUserSpecialties(@RequestHeader HttpHeaders headers, @RequestBody UpdateSpecialtiesDto.Request request) {
+        try {
+            this.userService.updateUserSpecialties(headers, request);
             return new BaseResponse(SUCCESS);
         } catch (BaseException e) {
             return new BaseResponse(e.getStatus());

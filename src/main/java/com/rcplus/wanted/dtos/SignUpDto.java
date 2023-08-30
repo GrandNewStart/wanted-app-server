@@ -19,6 +19,7 @@ public class SignUpDto {
     public static class Request {
         private String email;
         private String password;
+        private String name;
         @JsonProperty("country_code")
         private String countryCode;
         @JsonProperty("phone_number")
@@ -34,7 +35,7 @@ public class SignUpDto {
             return User.builder()
                 .email(email)
                 .password(password)
-                .name("user-"+UUID.randomUUID())
+                .name(name)
                 .countryCode(countryCode)
                 .phoneNumber(phoneNumber)
                 .marketingEmail(marketingEmail == "Y")

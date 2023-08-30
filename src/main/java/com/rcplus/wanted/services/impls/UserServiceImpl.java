@@ -1,24 +1,32 @@
 package com.rcplus.wanted.services.impls;
 
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.batch.BatchProperties.Job;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import com.rcplus.wanted.configs.BaseException;
 import com.rcplus.wanted.dtos.GetUserInfoDto.Response;
+import com.rcplus.wanted.dtos.GetUserSpecialtiesDto;
 import com.rcplus.wanted.dtos.GetUserInfoDto;
 import com.rcplus.wanted.dtos.LogInDto;
 import com.rcplus.wanted.dtos.RefreshTokenDto;
 import com.rcplus.wanted.dtos.SignOutDto;
 import com.rcplus.wanted.dtos.SignUpDto;
+import com.rcplus.wanted.dtos.UpdateSpecialtiesDto;
 import com.rcplus.wanted.dtos.UpdateUserInfoDto;
 import com.rcplus.wanted.dtos.UpdateUserInfoDto.Request;
+import com.rcplus.wanted.models.JobField;
+import com.rcplus.wanted.models.JobSpecialty;
 import com.rcplus.wanted.models.User;
 import com.rcplus.wanted.repositories.UserRepository;
+import com.rcplus.wanted.services.SpecialtyService;
 import com.rcplus.wanted.services.UserService;
 
 import static com.rcplus.wanted.configs.BaseResponseStatus.*;
@@ -28,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SpecialtyService specialtyService;
 
     @Override
     public SignUpDto.Response createUser(SignUpDto.Request request) throws BaseException {
@@ -130,6 +141,68 @@ public class UserServiceImpl implements UserService {
     public User findByEmail(String email) {
         return this.userRepository.findByEmail(email)
             .orElseThrow(()->new IllegalArgumentException(email));
+    }
+
+    @Override
+    public GetUserSpecialtiesDto.Response getUserSpecialties(HttpHeaders headers) throws BaseException {
+        String email;
+        String password;
+        try {
+            String[] credentials = this.getUserCredentials(headers);
+            email = credentials[0];
+            password = credentials[1];
+        } catch (BaseException e) {
+            throw e;
+        }
+        Optional<User> user = this.userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new BaseException(INVALID_JWT);
+        }
+        if (!user.get().getPassword().equals(password)) {
+            throw new BaseException(INVALID_JWT);
+        }
+        List<String> specialties = new ArrayList<>();
+        for (String value : user.get().getJobSpecialties().split(";")) {
+            specialties.add(value);
+        }
+        return GetUserSpecialtiesDto.Response.builder()
+            .jobField(user.get().getJobField())
+            .jobSpecialties(specialties)
+            .years(user.get().getYears())
+            .build();
+    }
+
+    @Override
+    public void updateUserSpecialties(HttpHeaders headers, UpdateSpecialtiesDto.Request request) throws BaseException {
+        String email;
+        String password;
+        try {
+            String[] credentials = this.getUserCredentials(headers);
+            email = credentials[0];
+            password = credentials[1];
+        } catch (BaseException e) {
+            throw e;
+        }
+        Optional<User> user = this.userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new BaseException(INVALID_JWT);
+        }
+        if (!user.get().getPassword().equals(password)) {
+            throw new BaseException(INVALID_JWT);
+        }
+
+        User updatedUser = user.get();
+        String specialties = "";
+        for (String value : request.getJobSpecialties()) {
+            specialties += value;
+            specialties += ";";
+        }
+
+        updatedUser.setJobField(request.getJobField());
+        updatedUser.setJobSpecialties(specialties);
+        updatedUser.setYears(request.getYears());
+        this.userRepository.save(updatedUser);
+        return;
     }
 
     @Override

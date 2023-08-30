@@ -63,6 +63,8 @@ public class User implements UserDetails {
     @Column(name = "job_specialties")
     private String jobSpecialties;
 
+    private int years;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("user"));

@@ -1,16 +1,22 @@
 package com.rcplus.wanted.services.impls;
 
-import java.net.http.HttpHeaders;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import com.rcplus.wanted.configs.BaseException;
+import com.rcplus.wanted.dtos.GetUserInfoDto.Response;
+import com.rcplus.wanted.dtos.GetUserInfoDto;
 import com.rcplus.wanted.dtos.LogInDto;
 import com.rcplus.wanted.dtos.RefreshTokenDto;
+import com.rcplus.wanted.dtos.SignOutDto;
 import com.rcplus.wanted.dtos.SignUpDto;
+import com.rcplus.wanted.dtos.UpdateUserInfoDto;
+import com.rcplus.wanted.dtos.UpdateUserInfoDto.Request;
 import com.rcplus.wanted.models.User;
 import com.rcplus.wanted.repositories.UserRepository;
 import com.rcplus.wanted.services.UserService;
@@ -37,7 +43,70 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(com.rcplus.wanted.dtos.SignOutDto.Request request) throws BaseException {
+    public GetUserInfoDto.Response getUser(HttpHeaders headers) throws BaseException {
+        String email;
+        String password;
+        try {
+            String[] credentials = this.getUserCredentials(headers);
+            email = credentials[0];
+            password = credentials[1];
+        } catch (BaseException e) {
+            throw e;
+        }
+        Optional<User> user = this.userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new BaseException(INVALID_JWT);
+        }
+        if (!user.get().getPassword().equals(password)) {
+            throw new BaseException(INVALID_JWT);
+        }
+        return GetUserInfoDto.Response.from(user.get());
+    }
+
+    
+    @Override
+    public void updateUser(HttpHeaders headers, UpdateUserInfoDto.Request request) throws BaseException {
+        String email;
+        String password;
+        try {
+            String[] credentials = this.getUserCredentials(headers);
+            email = credentials[0];
+            password = credentials[1];
+        } catch (BaseException e) {
+            throw e;
+        }
+        Optional<User> user = this.userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new BaseException(INVALID_JWT);
+        }
+        if (!user.get().getPassword().equals(password)) {
+            throw new BaseException(INVALID_JWT);
+        }
+        if (!user.get().getId().equals(request.getId())) {
+            throw new BaseException(USER_ID_EMPTY);
+        }
+        if (request.getName().isEmpty()) {
+            throw new BaseException(USER_NAME_EMPTY);
+        }
+        if (request.getCountryCode().isEmpty()) {
+            throw new BaseException(USER_NAME_EMPTY);
+        }
+        if (request.getPhoneNumber().isEmpty()) {
+            throw new BaseException(USER_NAME_EMPTY);
+        }
+        User updatedUser = user.get();
+        updatedUser.setName(request.getName());
+        updatedUser.setCountryCode(request.getCountryCode());
+        updatedUser.setPhoneNumber(request.getPhoneNumber());
+        updatedUser.setMarketingEmail(request.getMarketingEmail().equals("Y"));
+        updatedUser.setMarketingPush(request.getMarketingPush().equals("Y"));
+        updatedUser.setMarketingSms(request.getMarketingSms().equals("Y"));
+        this.userRepository.save(updatedUser);
+        return;
+    }
+
+    @Override
+    public void deleteUser(SignOutDto.Request request) throws BaseException {
         Optional<User> user = this.userRepository.findById(request.getUserId());
         if (user.isEmpty()) {
             throw new BaseException(REQUEST_ERROR);
@@ -86,22 +155,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RefreshTokenDto.Response refreshToken(RefreshTokenDto.Request request, String auth) throws BaseException {
-        String[] auths = auth.split(" ");
-        if (auths.length != 2) {
-            throw new BaseException(INVALID_JWT);
+    public RefreshTokenDto.Response refreshToken(RefreshTokenDto.Request request, HttpHeaders headers) throws BaseException {
+        String email;
+        String password;
+        try {
+            String[] credentials = this.getUserCredentials(headers);
+            email = credentials[0];
+            password = credentials[1];
+        } catch (BaseException e) {
+            throw e;
         }
-        if (!auths[0].equals("Basic")) {
-            throw new BaseException(INVALID_JWT);
-        }
-        String token = auths[1];
-        String credential = new String(Base64.getDecoder().decode(token));
-        String[] credentials = credential.split(":");
-        if (credentials.length != 2) {
-            throw new BaseException(INVALID_JWT);
-        }
-        String email = credentials[0];
-        String password = credentials[1];
         Optional<User> user = this.userRepository.findByEmail(email);
         if (user.isEmpty()) {
             throw new BaseException(INVALID_JWT);
@@ -117,5 +180,29 @@ public class UserServiceImpl implements UserService {
             .expireTime(3600)
             .build();
     }
-    
+
+    private String[] getUserCredentials(HttpHeaders headers) throws BaseException {
+        List<String> authHeaders = headers.get("authorization");
+        if (authHeaders == null) {
+            throw new BaseException(INVALID_JWT);
+        }
+        String auth = authHeaders.get(0);
+        if (auth == null) {
+            throw new BaseException(INVALID_JWT);
+        }
+        String[] auths = auth.split(" ");
+        if (auths.length != 2) {
+            throw new BaseException(INVALID_JWT);
+        }
+        if (!auths[0].equals("Basic")) {
+            throw new BaseException(INVALID_JWT);
+        }
+        String credentialString = new String(Base64.getDecoder().decode(auths[1]));
+        String[] credentials = credentialString.split(":");
+        if (credentials.length != 2) {
+            throw new BaseException(INVALID_JWT);
+        }
+        return credentials;
+    }
+
 }

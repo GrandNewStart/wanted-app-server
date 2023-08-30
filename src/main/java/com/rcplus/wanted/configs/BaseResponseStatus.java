@@ -17,6 +17,8 @@ public enum BaseResponseStatus {
     INVALID_USER_MARKETING_EMAIL(false, "이메일 마케팅 정보 수신 필드를 확인해주세요."),
     INVALID_USER_MARKETING_PUSH(false, "푸시 알림 마케팅 정보 수신 필드를 확인해주세요."),
     INVALID_USER_MARKETING_SMS(false, "SMS 마케팅 정보 수신 필드를 확인해주세요."),
+    DUPLICATE_BUSINESS_REG_CODE(false, "이미 존재하는 사업자등록번호입니다."),
+    COMPANY_NOT_FOUND(false, "존재하지 않는 기업 아이디입니다."),
 
     POST_USERS_EMPTY_EMAIL(false, "이메일을 입력해주세요."),
     POST_USERS_INVALID_EMAIL(false, "이메일 형식을 확인해주세요."),

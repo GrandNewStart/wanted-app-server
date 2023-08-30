@@ -1,7 +1,5 @@
 package com.rcplus.wanted.dtos;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rcplus.wanted.models.JobField;
 import com.rcplus.wanted.models.JobSpecialty;

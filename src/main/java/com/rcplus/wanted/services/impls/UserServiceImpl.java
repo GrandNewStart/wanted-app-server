@@ -4,15 +4,12 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.batch.BatchProperties.Job;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import com.rcplus.wanted.configs.BaseException;
-import com.rcplus.wanted.dtos.GetUserInfoDto.Response;
 import com.rcplus.wanted.dtos.GetUserSpecialtiesDto;
 import com.rcplus.wanted.dtos.GetUserInfoDto;
 import com.rcplus.wanted.dtos.LogInDto;
@@ -21,12 +18,8 @@ import com.rcplus.wanted.dtos.SignOutDto;
 import com.rcplus.wanted.dtos.SignUpDto;
 import com.rcplus.wanted.dtos.UpdateSpecialtiesDto;
 import com.rcplus.wanted.dtos.UpdateUserInfoDto;
-import com.rcplus.wanted.dtos.UpdateUserInfoDto.Request;
-import com.rcplus.wanted.models.JobField;
-import com.rcplus.wanted.models.JobSpecialty;
 import com.rcplus.wanted.models.User;
 import com.rcplus.wanted.repositories.UserRepository;
-import com.rcplus.wanted.services.SpecialtyService;
 import com.rcplus.wanted.services.UserService;
 
 import static com.rcplus.wanted.configs.BaseResponseStatus.*;
@@ -36,9 +29,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private SpecialtyService specialtyService;
 
     @Override
     public SignUpDto.Response createUser(SignUpDto.Request request) throws BaseException {
@@ -55,45 +45,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GetUserInfoDto.Response getUser(HttpHeaders headers) throws BaseException {
-        String email;
-        String password;
         try {
             String[] credentials = this.getUserCredentials(headers);
-            email = credentials[0];
-            password = credentials[1];
+            User user = this.getUserFromCredentials(credentials);
+            return GetUserInfoDto.Response.from(user);
         } catch (BaseException e) {
             throw e;
         }
-        Optional<User> user = this.userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new BaseException(INVALID_JWT);
-        }
-        if (!user.get().getPassword().equals(password)) {
-            throw new BaseException(INVALID_JWT);
-        }
-        return GetUserInfoDto.Response.from(user.get());
     }
 
     
     @Override
     public void updateUser(HttpHeaders headers, UpdateUserInfoDto.Request request) throws BaseException {
-        String email;
-        String password;
+        User user;
         try {
             String[] credentials = this.getUserCredentials(headers);
-            email = credentials[0];
-            password = credentials[1];
+            user = this.getUserFromCredentials(credentials);
         } catch (BaseException e) {
             throw e;
         }
-        Optional<User> user = this.userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new BaseException(INVALID_JWT);
-        }
-        if (!user.get().getPassword().equals(password)) {
-            throw new BaseException(INVALID_JWT);
-        }
-        if (!user.get().getId().equals(request.getId())) {
+        if (!user.getId().equals(request.getId())) {
             throw new BaseException(USER_ID_EMPTY);
         }
         if (request.getName().isEmpty()) {
@@ -105,7 +76,7 @@ public class UserServiceImpl implements UserService {
         if (request.getPhoneNumber().isEmpty()) {
             throw new BaseException(USER_NAME_EMPTY);
         }
-        User updatedUser = user.get();
+        User updatedUser = user;
         updatedUser.setName(request.getName());
         updatedUser.setCountryCode(request.getCountryCode());
         updatedUser.setPhoneNumber(request.getPhoneNumber());
@@ -117,18 +88,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(SignOutDto.Request request) throws BaseException {
-        Optional<User> user = this.userRepository.findById(request.getUserId());
-        if (user.isEmpty()) {
+    public void deleteUser(HttpHeaders headers, SignOutDto.Request request) throws BaseException {
+        User user;
+        try {
+            String[] credentials = this.getUserCredentials(headers);
+            user = this.getUserFromCredentials(credentials);
+        } catch (BaseException e) {
+            throw e;
+        }
+        if (user.getId() != request.getUserId()) {
             throw new BaseException(REQUEST_ERROR);
         }
-        if (!user.get().getEmail().equals(request.getEmail())) {
+        if (!user.getEmail().equals(request.getEmail())) {
             throw new BaseException(REQUEST_ERROR);
         }
-        if (!user.get().getPassword().equals(request.getPassword())) {
+        if (!user.getPassword().equals(request.getPassword())) {
             throw new BaseException(REQUEST_ERROR);
         }
-        this.userRepository.delete(user.get());
+        this.userRepository.delete(user);
     }
 
     @Override
@@ -145,53 +122,34 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GetUserSpecialtiesDto.Response getUserSpecialties(HttpHeaders headers) throws BaseException {
-        String email;
-        String password;
+        User user;
         try {
             String[] credentials = this.getUserCredentials(headers);
-            email = credentials[0];
-            password = credentials[1];
+            user = this.getUserFromCredentials(credentials);
         } catch (BaseException e) {
             throw e;
         }
-        Optional<User> user = this.userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new BaseException(INVALID_JWT);
-        }
-        if (!user.get().getPassword().equals(password)) {
-            throw new BaseException(INVALID_JWT);
-        }
         List<String> specialties = new ArrayList<>();
-        for (String value : user.get().getJobSpecialties().split(";")) {
+        for (String value : user.getJobSpecialties().split(";")) {
             specialties.add(value);
         }
         return GetUserSpecialtiesDto.Response.builder()
-            .jobField(user.get().getJobField())
+            .jobField(user.getJobField())
             .jobSpecialties(specialties)
-            .years(user.get().getYears())
+            .years(user.getYears())
             .build();
     }
 
     @Override
     public void updateUserSpecialties(HttpHeaders headers, UpdateSpecialtiesDto.Request request) throws BaseException {
-        String email;
-        String password;
+        User user;
         try {
             String[] credentials = this.getUserCredentials(headers);
-            email = credentials[0];
-            password = credentials[1];
+            user = this.getUserFromCredentials(credentials);
         } catch (BaseException e) {
             throw e;
         }
-        Optional<User> user = this.userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new BaseException(INVALID_JWT);
-        }
-        if (!user.get().getPassword().equals(password)) {
-            throw new BaseException(INVALID_JWT);
-        }
-
-        User updatedUser = user.get();
+        User updatedUser = user;
         String specialties = "";
         for (String value : request.getJobSpecialties()) {
             specialties += value;
@@ -229,23 +187,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public RefreshTokenDto.Response refreshToken(RefreshTokenDto.Request request, HttpHeaders headers) throws BaseException {
-        String email;
-        String password;
+        User user;
         try {
             String[] credentials = this.getUserCredentials(headers);
-            email = credentials[0];
-            password = credentials[1];
+            user = this.getUserFromCredentials(credentials);
         } catch (BaseException e) {
             throw e;
         }
-        Optional<User> user = this.userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new BaseException(INVALID_JWT);
-        }
-        if (!user.get().getPassword().equals(password)) {
-            throw new BaseException(INVALID_JWT);
-        }
-        String userCredential = user.get().getEmail() + ":" + user.get().getPassword();
+        String userCredential = user.getEmail() + ":" + user.getPassword();
         String newToken = Base64.getEncoder().encodeToString(userCredential.getBytes());
         return RefreshTokenDto.Response.builder()
             .accessToken(newToken)
@@ -276,6 +225,19 @@ public class UserServiceImpl implements UserService {
             throw new BaseException(INVALID_JWT);
         }
         return credentials;
+    }
+
+    private User getUserFromCredentials(String[] credentials) throws BaseException {
+        String email = credentials[0];
+        String password = credentials[1];
+        Optional<User> user = this.userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            throw new BaseException(INVALID_JWT);
+        }
+        if (!user.get().getPassword().equals(password)) {
+            throw new BaseException(INVALID_JWT);
+        }
+        return user.get();
     }
 
 }

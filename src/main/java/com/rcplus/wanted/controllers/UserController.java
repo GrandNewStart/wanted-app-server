@@ -62,9 +62,9 @@ public class UserController {
     }
 
     @DeleteMapping("/users")
-    public BaseResponse deleteUser(@RequestBody SignOutDto.Request request) {
+    public BaseResponse deleteUser(@RequestHeader HttpHeaders headers, @RequestBody SignOutDto.Request request) {
         try {
-            this.userService.deleteUser(request);
+            this.userService.deleteUser(headers, request);
             return new BaseResponse(SUCCESS);
         } catch (BaseException e) {
             return new BaseResponse(e.getStatus());

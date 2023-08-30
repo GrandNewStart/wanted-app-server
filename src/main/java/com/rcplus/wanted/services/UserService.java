@@ -19,7 +19,7 @@ public interface UserService {
     public SignUpDto.Response createUser(SignUpDto.Request request) throws BaseException;
     public GetUserInfoDto.Response getUser(HttpHeaders headers) throws BaseException;
     public void updateUser(HttpHeaders headers, UpdateUserInfoDto.Request request) throws BaseException;
-    public void deleteUser(SignOutDto.Request request) throws BaseException;
+    public void deleteUser(HttpHeaders headers, SignOutDto.Request request) throws BaseException;
     public GetUserSpecialtiesDto.Response getUserSpecialties(HttpHeaders headers) throws BaseException;
     public void updateUserSpecialties(HttpHeaders headers, UpdateSpecialtiesDto.Request request) throws BaseException;
     public LogInDto.Response logIn(LogInDto.Request request) throws BaseException;

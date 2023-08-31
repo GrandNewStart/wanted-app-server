@@ -1,29 +1,28 @@
-package com.rcplus.wanted.dtos;
+package com.rcplus.wanted.configs.jwt;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-public class LogInDto {
-
+public class CreateAccessTokenDto {
+    
     @Getter
     @Setter
     public static class Request {
-        private String email;
-        private String password;
+        @JsonProperty("refresh_token")
+        private String refreshToken;
     }
 
     @Getter
     @Setter
-    @Builder
+    @AllArgsConstructor
     public static class Response {
         @JsonProperty("access_token")
         private String accessToken;
-
         @JsonProperty("refresh_token")
         private String refreshToken;
     }
-    
+
 }

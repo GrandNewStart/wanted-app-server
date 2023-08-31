@@ -1,7 +1,6 @@
 package com.rcplus.wanted.services.impls;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,10 +9,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import com.rcplus.wanted.configs.BaseException;
+import com.rcplus.wanted.configs.jwt.TokenService;
 import com.rcplus.wanted.dtos.GetUserSpecialtiesDto;
 import com.rcplus.wanted.dtos.GetUserInfoDto;
-import com.rcplus.wanted.dtos.LogInDto;
-import com.rcplus.wanted.dtos.RefreshTokenDto;
 import com.rcplus.wanted.dtos.SignOutDto;
 import com.rcplus.wanted.dtos.SignUpDto;
 import com.rcplus.wanted.dtos.UpdateSpecialtiesDto;
@@ -29,6 +27,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private TokenService tokenService;
 
     @Override
     public SignUpDto.Response createUser(SignUpDto.Request request) throws BaseException {
@@ -46,21 +47,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public GetUserInfoDto.Response getUser(HttpHeaders headers) throws BaseException {
         try {
-            String[] credentials = this.getUserCredentials(headers);
-            User user = this.getUserFromCredentials(credentials);
+            User user = this.tokenService.getUserFromHttpHeaders(headers);
             return GetUserInfoDto.Response.from(user);
         } catch (BaseException e) {
             throw e;
         }
     }
-
     
     @Override
     public void updateUser(HttpHeaders headers, UpdateUserInfoDto.Request request) throws BaseException {
         User user;
         try {
-            String[] credentials = this.getUserCredentials(headers);
-            user = this.getUserFromCredentials(credentials);
+            user = this.tokenService.getUserFromHttpHeaders(headers);
         } catch (BaseException e) {
             throw e;
         }
@@ -91,8 +89,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(HttpHeaders headers, SignOutDto.Request request) throws BaseException {
         User user;
         try {
-            String[] credentials = this.getUserCredentials(headers);
-            user = this.getUserFromCredentials(credentials);
+            user = this.tokenService.getUserFromHttpHeaders(headers);
         } catch (BaseException e) {
             throw e;
         }
@@ -109,23 +106,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long userId) {
-        return this.userRepository.findById(userId)
-            .orElseThrow(()->new IllegalArgumentException("Unexpected user"));
+    public User findById(Long userId) throws BaseException {
+        Optional<User> user = this.userRepository.findById(userId);
+        if (!user.isPresent()) {
+            throw new BaseException(REQUEST_ERROR);
+        }
+        return user.get();
     }
 
     @Override
-    public User findByEmail(String email) {
-        return this.userRepository.findByEmail(email)
-            .orElseThrow(()->new IllegalArgumentException(email));
+    public User findByEmail(String email) throws BaseException {
+        Optional<User> user = this.userRepository.findByEmail(email);
+        if (!user.isPresent()) {
+            throw new BaseException(REQUEST_ERROR);
+        }
+        return user.get();
     }
 
     @Override
     public GetUserSpecialtiesDto.Response getUserSpecialties(HttpHeaders headers) throws BaseException {
         User user;
         try {
-            String[] credentials = this.getUserCredentials(headers);
-            user = this.getUserFromCredentials(credentials);
+            user = this.tokenService.getUserFromHttpHeaders(headers);
         } catch (BaseException e) {
             throw e;
         }
@@ -144,8 +146,7 @@ public class UserServiceImpl implements UserService {
     public void updateUserSpecialties(HttpHeaders headers, UpdateSpecialtiesDto.Request request) throws BaseException {
         User user;
         try {
-            String[] credentials = this.getUserCredentials(headers);
-            user = this.getUserFromCredentials(credentials);
+            user = this.tokenService.getUserFromHttpHeaders(headers);
         } catch (BaseException e) {
             throw e;
         }
@@ -161,83 +162,6 @@ public class UserServiceImpl implements UserService {
         updatedUser.setYears(request.getYears());
         this.userRepository.save(updatedUser);
         return;
-    }
-
-    @Override
-    public LogInDto.Response logIn(LogInDto.Request request) throws BaseException {
-        String email = request.getEmail();
-        if (email.isEmpty()) {
-            throw new BaseException(FAILED_TO_LOGIN);
-        }
-        Optional<User> user = this.userRepository.findByEmail(email);
-        if (!user.isPresent()) {
-            throw new BaseException(FAILED_TO_LOGIN);
-        }
-        if (!user.get().getPassword().equals(request.getPassword())) {
-            throw new BaseException(FAILED_TO_LOGIN);
-        }
-        String userCredential = user.get().getEmail() + ":" + user.get().getPassword();
-        String token = Base64.getEncoder().encodeToString(userCredential.getBytes());
-        return LogInDto.Response.builder()
-            .accessToken(token)
-            .refreshToken(token)
-            .expireTime(3600)
-            .build();
-    }
-
-    @Override
-    public RefreshTokenDto.Response refreshToken(RefreshTokenDto.Request request, HttpHeaders headers) throws BaseException {
-        User user;
-        try {
-            String[] credentials = this.getUserCredentials(headers);
-            user = this.getUserFromCredentials(credentials);
-        } catch (BaseException e) {
-            throw e;
-        }
-        String userCredential = user.getEmail() + ":" + user.getPassword();
-        String newToken = Base64.getEncoder().encodeToString(userCredential.getBytes());
-        return RefreshTokenDto.Response.builder()
-            .accessToken(newToken)
-            .refreshToken(newToken)
-            .expireTime(3600)
-            .build();
-    }
-
-    private String[] getUserCredentials(HttpHeaders headers) throws BaseException {
-        List<String> authHeaders = headers.get("authorization");
-        if (authHeaders == null) {
-            throw new BaseException(INVALID_JWT);
-        }
-        String auth = authHeaders.get(0);
-        if (auth == null) {
-            throw new BaseException(INVALID_JWT);
-        }
-        String[] auths = auth.split(" ");
-        if (auths.length != 2) {
-            throw new BaseException(INVALID_JWT);
-        }
-        if (!auths[0].equals("Basic")) {
-            throw new BaseException(INVALID_JWT);
-        }
-        String credentialString = new String(Base64.getDecoder().decode(auths[1]));
-        String[] credentials = credentialString.split(":");
-        if (credentials.length != 2) {
-            throw new BaseException(INVALID_JWT);
-        }
-        return credentials;
-    }
-
-    private User getUserFromCredentials(String[] credentials) throws BaseException {
-        String email = credentials[0];
-        String password = credentials[1];
-        Optional<User> user = this.userRepository.findByEmail(email);
-        if (user.isEmpty()) {
-            throw new BaseException(INVALID_JWT);
-        }
-        if (!user.get().getPassword().equals(password)) {
-            throw new BaseException(INVALID_JWT);
-        }
-        return user.get();
     }
 
 }

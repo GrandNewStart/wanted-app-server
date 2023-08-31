@@ -91,24 +91,24 @@ public class UserController {
         }
     }
 
-    @PostMapping("/login")
-    public BaseResponse login(@RequestBody LogInDto.Request request) {
-        try {
-            LogInDto.Response data = this.userService.logIn(request);
-            return new BaseResponse(data);
-        } catch (BaseException e) {
-            return new BaseResponse(e.getStatus());
-        }
-    }
+    // @PostMapping("/login")
+    // public BaseResponse login(@RequestBody LogInDto.Request request) {
+    //     try {
+    //         LogInDto.Response data = this.userService.logIn(request);
+    //         return new BaseResponse(data);
+    //     } catch (BaseException e) {
+    //         return new BaseResponse(e.getStatus());
+    //     }
+    // }
 
-    @PostMapping("/token-refresh")
-    public BaseResponse refreshToken(@RequestBody RefreshTokenDto.Request request, @RequestHeader HttpHeaders headers) {
-        try {
-            RefreshTokenDto.Response data = this.userService.refreshToken(request, headers);
-            return new BaseResponse(data);
-        } catch (BaseException e) {
-            return new BaseResponse(e.getStatus());
-        }
-    }
+    // @PostMapping("/token-refresh")
+    // public BaseResponse refreshToken(@RequestBody RefreshTokenDto.Request request, @RequestHeader HttpHeaders headers) {
+    //     try {
+    //         RefreshTokenDto.Response data = this.userService.refreshToken(request, headers);
+    //         return new BaseResponse(data);
+    //     } catch (BaseException e) {
+    //         return new BaseResponse(e.getStatus());
+    //     }
+    // }
 
 }

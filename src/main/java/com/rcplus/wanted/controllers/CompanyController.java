@@ -2,6 +2,8 @@ package com.rcplus.wanted.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,32 +28,32 @@ public class CompanyController {
     private CompanyService companyService;
 
     @GetMapping("/companies")
-    public BaseResponse getCompany(@RequestHeader HttpHeaders headers, @RequestParam("id") Long id) {
+    public ResponseEntity<BaseResponse> getCompany(@RequestHeader HttpHeaders headers, @RequestParam("id") Long id) {
         try {
             GetCompanyInfoDto.Response data = this.companyService.getCompany(headers, id);
-            return new BaseResponse(data);
+            return new ResponseEntity<BaseResponse>(new BaseResponse(data), HttpStatus.OK);
         } catch (BaseException e) {
-            return new BaseResponse(e.getStatus());
+            return new ResponseEntity<BaseResponse>(new BaseResponse(e.getStatus()), e.getStatus().getStatus());
         }
     }
 
     @PostMapping("/companies")
-    public BaseResponse registerCompany(@RequestHeader HttpHeaders headers, @RequestBody RegisterCompanyDto.Request request) {
+    public ResponseEntity<BaseResponse> registerCompany(@RequestHeader HttpHeaders headers, @RequestBody RegisterCompanyDto.Request request) {
         try {
             RegisterCompanyDto.Response data = this.companyService.registerCompany(headers, request);
-            return new BaseResponse(data);
+            return new ResponseEntity<BaseResponse>(new BaseResponse(data), HttpStatus.OK);
         } catch (BaseException e) {
-            return new BaseResponse(e.getStatus());
+            return new ResponseEntity<BaseResponse>(new BaseResponse(e.getStatus()), e.getStatus().getStatus());
         }
     }
 
     @DeleteMapping("/companies")
-    public BaseResponse deleteCompany(@RequestHeader HttpHeaders headers, @RequestBody DeleteCompanyDto.Request request) {
+    public ResponseEntity<BaseResponse> deleteCompany(@RequestHeader HttpHeaders headers, @RequestBody DeleteCompanyDto.Request request) {
         try {
             this.companyService.deleteCompany(headers, request);
-            return new BaseResponse(SUCCESS);
+            return new ResponseEntity<BaseResponse>(new BaseResponse(SUCCESS), HttpStatus.OK);
         } catch (BaseException e) {
-            return new BaseResponse(e.getStatus());
+            return new ResponseEntity<BaseResponse>(new BaseResponse(e.getStatus()), e.getStatus().getStatus());
         }
     }
 

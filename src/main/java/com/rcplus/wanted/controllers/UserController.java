@@ -20,7 +20,6 @@ import com.rcplus.wanted.dtos.SignOutDto;
 import com.rcplus.wanted.dtos.SignUpDto;
 import com.rcplus.wanted.dtos.UpdateSpecialtiesDto;
 import com.rcplus.wanted.dtos.UpdateUserInfoDto;
-import com.rcplus.wanted.models.Company;
 import com.rcplus.wanted.services.CompanyService;
 import com.rcplus.wanted.services.UserService;
 
@@ -84,7 +83,7 @@ public class UserController {
     public ResponseEntity<BaseResponse> getUserSpecialties(@RequestHeader HttpHeaders headers) {
         try {
             GetUserSpecialtiesDto.Response data = this.userService.getUserSpecialties(headers);
-            return new ResponseEntity<BaseResponse>(new BaseResponse(SUCCESS), HttpStatus.OK);
+            return new ResponseEntity<BaseResponse>(new BaseResponse(data), HttpStatus.OK);
         } catch (BaseException e) {
             BaseResponse data = new BaseResponse(e.getStatus());
             return new ResponseEntity<BaseResponse>(data, e.getStatus().getStatus());

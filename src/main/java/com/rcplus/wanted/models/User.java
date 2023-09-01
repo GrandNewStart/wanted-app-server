@@ -17,11 +17,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
+@Setter
 @Builder
 public class User implements UserDetails {
     
@@ -60,6 +62,8 @@ public class User implements UserDetails {
 
     @Column(name = "job_specialties")
     private String jobSpecialties;
+
+    private int years;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

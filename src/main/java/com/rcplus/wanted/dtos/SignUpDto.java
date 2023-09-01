@@ -1,7 +1,5 @@
 package com.rcplus.wanted.dtos;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rcplus.wanted.models.JobField;
 import com.rcplus.wanted.models.JobSpecialty;
@@ -11,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-
 public class SignUpDto {
     
     @Getter
@@ -19,6 +16,7 @@ public class SignUpDto {
     public static class Request {
         private String email;
         private String password;
+        private String name;
         @JsonProperty("country_code")
         private String countryCode;
         @JsonProperty("phone_number")
@@ -34,7 +32,7 @@ public class SignUpDto {
             return User.builder()
                 .email(email)
                 .password(password)
-                .name("user-"+UUID.randomUUID())
+                .name(name)
                 .countryCode(countryCode)
                 .phoneNumber(phoneNumber)
                 .marketingEmail(marketingEmail == "Y")

@@ -31,7 +31,7 @@ public class Company {
 
     private String name;
 
-    @JsonProperty("business_registration_code")
+    @JsonProperty("business_reg_code")
     private String businessRegCode;
 
     private String nation;

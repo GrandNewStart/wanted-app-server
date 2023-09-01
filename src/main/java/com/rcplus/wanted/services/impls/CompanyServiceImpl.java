@@ -10,7 +10,6 @@ import com.rcplus.wanted.configs.BaseException;
 import com.rcplus.wanted.configs.jwt.TokenService;
 import com.rcplus.wanted.dtos.DeleteCompanyDto;
 import com.rcplus.wanted.dtos.GetCompanyInfoDto;
-import com.rcplus.wanted.dtos.GetCompanyInfoDto.Response;
 import com.rcplus.wanted.dtos.RegisterCompanyDto;
 import com.rcplus.wanted.models.Company;
 import com.rcplus.wanted.models.User;

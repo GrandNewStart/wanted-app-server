@@ -10,6 +10,7 @@ import com.rcplus.wanted.configs.BaseException;
 import com.rcplus.wanted.configs.jwt.TokenService;
 import com.rcplus.wanted.dtos.DeleteCompanyDto;
 import com.rcplus.wanted.dtos.GetCompanyInfoDto;
+import com.rcplus.wanted.dtos.GetCompanyInfoDto.Response;
 import com.rcplus.wanted.dtos.RegisterCompanyDto;
 import com.rcplus.wanted.models.Company;
 import com.rcplus.wanted.models.User;
@@ -26,6 +27,21 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Autowired
     private TokenService tokenService;
+
+    @Override
+    public GetCompanyInfoDto.Response getUserCompany(HttpHeaders headers) throws BaseException {
+        User user;
+        try {
+            user = this.tokenService.getUserFromHttpHeaders(headers);
+        } catch (BaseException e) {
+            throw e;
+        }
+        Optional<Company> company = this.companyRepository.findByUserId(user.getId());
+        if (company.isEmpty()) {
+            return null;
+        }
+        return GetCompanyInfoDto.Response.from(company.get());
+    }
 
     @Override
     public RegisterCompanyDto.Response registerCompany(HttpHeaders headers, RegisterCompanyDto.Request request) throws BaseException {

@@ -1,6 +1,8 @@
 package com.rcplus.wanted.configs.jwt;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,22 +21,24 @@ public class TokenController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public BaseResponse login(@RequestBody LogInDto.Request request) {
+    public ResponseEntity<BaseResponse> login(@RequestBody LogInDto.Request request) {
         try {
-            LogInDto.Response data = this.tokenService.createNewTokens(request);
-            return new BaseResponse(data);
+            BaseResponse data = new BaseResponse(this.tokenService.createNewTokens(request));
+            return new ResponseEntity<>(data, HttpStatus.OK);
         } catch (BaseException e) {
-            return new BaseResponse(e.getStatus());
+            BaseResponse data = new BaseResponse(e.getStatus());
+            return new ResponseEntity<>(data, e.getStatus().getStatus());
         }
     }
 
     @PostMapping("/token-refresh")
-    public BaseResponse createNewAccessToken(@RequestBody CreateAccessTokenDto.Request request) {
+    public ResponseEntity<BaseResponse> createNewAccessToken(@RequestBody CreateAccessTokenDto.Request request) {
         try {
-            CreateAccessTokenDto.Response data = this.tokenService.refreshTokens(request);
-            return new BaseResponse(data);
+            BaseResponse data = new BaseResponse(this.tokenService.refreshTokens(request));
+            return new ResponseEntity<>(data, HttpStatus.OK);
         } catch (BaseException e) {
-            return new BaseResponse(e.getStatus());
+            BaseResponse data = new BaseResponse(e.getStatus());
+            return new ResponseEntity<BaseResponse>(data, e.getStatus().getStatus());
         }
         
     }

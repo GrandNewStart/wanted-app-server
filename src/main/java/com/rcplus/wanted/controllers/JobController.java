@@ -1,5 +1,7 @@
 package com.rcplus.wanted.controllers;
 
+import static com.rcplus.wanted.configs.BaseResponseStatus.*;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rcplus.wanted.configs.BaseException;
 import com.rcplus.wanted.configs.BaseResponse;
 import com.rcplus.wanted.models.JobField;
 import com.rcplus.wanted.services.SpecialtyService;
-
-import static com.rcplus.wanted.configs.BaseResponseStatus.*;
 
 @RestController
 public class JobController {

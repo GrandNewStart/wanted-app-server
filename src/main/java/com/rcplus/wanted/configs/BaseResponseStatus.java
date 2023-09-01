@@ -1,10 +1,10 @@
 package com.rcplus.wanted.configs;
 
+import static org.springframework.http.HttpStatus.*;
+
 import org.springframework.http.HttpStatus;
 
 import lombok.Getter;
-
-import static org.springframework.http.HttpStatus.*;
 
 @Getter
 public enum BaseResponseStatus {
@@ -38,12 +38,11 @@ public enum BaseResponseStatus {
     SERVER_ERROR(false, "서버와의 연결에 실패하였습니다.", BAD_REQUEST),
     MODIFY_FAIL_USERNAME(false, "유저네임 수정 실패", BAD_REQUEST),
     PASSWORD_ENCRYPTION_ERROR(false, "비밀번호 암호화에 실패하였습니다.", BAD_REQUEST),
-    PASSWORD_DECRYPTION_ERROR(false, "비밀번호 복호화에 실패하였습니다.", BAD_REQUEST);
-  
-    DUPLICATED_APPLICATION(false, "이미 지원하였습니다."),
-    DUPLICATED_LIKE(false,"이미 좋아요 하셨습니다."),
-    NO_EXISTS_LIKE(false,"좋아요를 하지 않으셨습니다."),
-    NO_EXISTS_APPLICATION(false,"지원서가 존재하지 않습니다.")
+    PASSWORD_DECRYPTION_ERROR(false, "비밀번호 복호화에 실패하였습니다.", BAD_REQUEST),
+    DUPLICATED_APPLICATION(false, "이미 지원하였습니다.", BAD_REQUEST),
+    DUPLICATED_LIKE(false,"이미 좋아요 하셨습니다.", BAD_REQUEST),
+    NO_EXISTS_LIKE(false,"좋아요를 하지 않으셨습니다.", BAD_REQUEST),
+    NO_EXISTS_APPLICATION(false,"지원서가 존재하지 않습니다.", BAD_REQUEST);
 
 
     private final HttpStatus status;

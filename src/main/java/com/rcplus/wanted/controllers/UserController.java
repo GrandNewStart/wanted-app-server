@@ -1,6 +1,6 @@
 package com.rcplus.wanted.controllers;
 
-import java.net.http.HttpHeaders;
+import static com.rcplus.wanted.configs.BaseResponseStatus.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,8 +16,6 @@ import com.rcplus.wanted.dtos.RefreshTokenDto;
 import com.rcplus.wanted.dtos.SignOutDto;
 import com.rcplus.wanted.dtos.SignUpDto;
 import com.rcplus.wanted.services.UserService;
-
-import static com.rcplus.wanted.configs.BaseResponseStatus.*;
 
 @RestController
 public class UserController {

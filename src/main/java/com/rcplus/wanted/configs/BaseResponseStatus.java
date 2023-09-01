@@ -20,7 +20,12 @@ public enum BaseResponseStatus {
     SERVER_ERROR(false, "서버와의 연결에 실패하였습니다."),
     MODIFY_FAIL_USERNAME(false, "유저네임 수정 실패"),
     PASSWORD_ENCRYPTION_ERROR(false, "비밀번호 암호화에 실패하였습니다."),
-    PASSWORD_DECRYPTION_ERROR(false, "비밀번호 복호화에 실패하였습니다.");
+    PASSWORD_DECRYPTION_ERROR(false, "비밀번호 복호화에 실패하였습니다."),
+    DUPLICATED_APPLICATION(false, "이미 지원하였습니다."),
+    DUPLICATED_LIKE(false,"이미 좋아요 하셨습니다."),
+    NO_EXISTS_LIKE(false,"좋아요를 하지 않으셨습니다."),
+    NO_EXISTS_APPLICATION(false,"지원서가 존재하지 않습니다.")
+    ;
 
     private final String result;
     private final String message;

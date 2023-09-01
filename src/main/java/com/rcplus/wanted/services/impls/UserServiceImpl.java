@@ -1,6 +1,7 @@
 package com.rcplus.wanted.services.impls;
 
-import java.net.http.HttpHeaders;
+import static com.rcplus.wanted.configs.BaseResponseStatus.*;
+
 import java.util.Base64;
 import java.util.Optional;
 
@@ -14,8 +15,6 @@ import com.rcplus.wanted.dtos.SignUpDto;
 import com.rcplus.wanted.models.User;
 import com.rcplus.wanted.repositories.UserRepository;
 import com.rcplus.wanted.services.UserService;
-
-import static com.rcplus.wanted.configs.BaseResponseStatus.*;
 
 @Service
 public class UserServiceImpl implements UserService {

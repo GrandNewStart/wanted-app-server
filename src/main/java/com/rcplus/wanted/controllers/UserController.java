@@ -1,5 +1,8 @@
 package com.rcplus.wanted.controllers;
 
+
+import static com.rcplus.wanted.configs.BaseResponseStatus.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,8 +25,6 @@ import com.rcplus.wanted.dtos.UpdateSpecialtiesDto;
 import com.rcplus.wanted.dtos.UpdateUserInfoDto;
 import com.rcplus.wanted.services.CompanyService;
 import com.rcplus.wanted.services.UserService;
-
-import static com.rcplus.wanted.configs.BaseResponseStatus.*;
 
 
 @RestController

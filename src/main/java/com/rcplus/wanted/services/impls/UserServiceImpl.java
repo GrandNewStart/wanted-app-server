@@ -1,5 +1,8 @@
 package com.rcplus.wanted.services.impls;
 
+
+import static com.rcplus.wanted.configs.BaseResponseStatus.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import com.rcplus.wanted.configs.BaseException;
 import com.rcplus.wanted.configs.jwt.TokenService;
-import com.rcplus.wanted.dtos.GetUserSpecialtiesDto;
 import com.rcplus.wanted.dtos.GetUserInfoDto;
+import com.rcplus.wanted.dtos.GetUserSpecialtiesDto;
 import com.rcplus.wanted.dtos.SignOutDto;
 import com.rcplus.wanted.dtos.SignUpDto;
 import com.rcplus.wanted.dtos.UpdateSpecialtiesDto;
@@ -19,8 +22,6 @@ import com.rcplus.wanted.dtos.UpdateUserInfoDto;
 import com.rcplus.wanted.models.User;
 import com.rcplus.wanted.repositories.UserRepository;
 import com.rcplus.wanted.services.UserService;
-
-import static com.rcplus.wanted.configs.BaseResponseStatus.*;
 
 @Service
 public class UserServiceImpl implements UserService {

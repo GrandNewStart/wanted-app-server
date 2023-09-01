@@ -74,7 +74,7 @@ public class RecruitmentController {
     }
 
     @PostMapping("/recruitments/like")
-    public BaseResponse addLike(@RequestBody Long recruitmentId){
+    public BaseResponse addLike(@RequestHeader HttpHeaders headers, @RequestBody Long recruitmentId){
         try{
         //토큰으로 유저아이디 불러오기
             Long userId = 123l;
@@ -90,7 +90,7 @@ public class RecruitmentController {
     }
 
     @DeleteMapping("/recruitments/like")
-    public BaseResponse deleteLike(@RequestBody Long recruitmentId){
+    public BaseResponse deleteLike(@RequestHeader HttpHeaders headers, @RequestBody Long recruitmentId){
         try{
         //토큰으로 유저아이디 불러오기
             Long userId = 123l;

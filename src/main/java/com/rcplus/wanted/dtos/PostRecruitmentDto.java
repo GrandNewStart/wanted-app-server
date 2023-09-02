@@ -60,6 +60,7 @@ public class PostRecruitmentDto {
         private List<String> jobSpecialties;
         private String title;
         private String description;
+        private String image;
         private String address;
         @JsonProperty("due_date")
         private String dueDate;
@@ -76,6 +77,7 @@ public class PostRecruitmentDto {
                 .jobSpecialties(recruitment.getJobSpecialities())
                 .title(recruitment.getTitle())
                 .description(recruitment.getDescription())
+                .image("https://wanted-resources.s3.ap-northeast-2.amazonaws.com/recruitments/default.jpg")
                 .address(recruitment.getAddress())
                 .dueDate(recruitment.getDueDate().toString())
                 .uploadDate(recruitment.getUploadDate().toString())

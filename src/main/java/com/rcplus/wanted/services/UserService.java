@@ -1,6 +1,7 @@
 package com.rcplus.wanted.services;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.rcplus.wanted.configs.BaseException;
 import com.rcplus.wanted.dtos.GetUserInfoDto;
@@ -20,4 +21,5 @@ public interface UserService {
     public void deleteUser(HttpHeaders headers, SignOutDto.Request request) throws BaseException;
     public GetUserSpecialtiesDto.Response getUserSpecialties(HttpHeaders headers) throws BaseException;
     public void updateUserSpecialties(HttpHeaders headers, UpdateSpecialtiesDto.Request request) throws BaseException;
+    public void updloadUserImage(HttpHeaders headers, MultipartFile file) throws BaseException;
 }

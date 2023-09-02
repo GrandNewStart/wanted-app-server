@@ -3,6 +3,9 @@ package com.rcplus.wanted.controllers;
 
 import static com.rcplus.wanted.configs.BaseResponseStatus.*;
 
+import java.io.IOException;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,9 +14,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.rcplus.wanted.configs.BaseException;
 import com.rcplus.wanted.configs.BaseResponse;
@@ -114,6 +120,18 @@ public class UserController {
         } catch (BaseException e) {
             BaseResponse data = new BaseResponse(e.getStatus());
             return new ResponseEntity<BaseResponse>(data, e.getStatus().getStatus());
+        }
+    }
+
+    @PutMapping("/users/images")
+    public ResponseEntity<BaseResponse> uploadUserImage(@RequestHeader HttpHeaders headers, @RequestParam("file") MultipartFile file) {
+        try {
+            this.userService.updloadUserImage(headers, file);
+            BaseResponse response = new BaseResponse(SUCCESS);
+            return new ResponseEntity<BaseResponse>(response, HttpStatus.OK);
+        } catch (BaseException e) {
+            BaseResponse response = new BaseResponse(e.getStatus());
+            return new ResponseEntity<BaseResponse>(response, e.getStatus().getStatus());
         }
     }
 

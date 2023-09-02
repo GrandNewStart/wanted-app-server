@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.rcplus.wanted.configs.BaseException;
 import com.rcplus.wanted.configs.jwt.TokenService;
@@ -165,4 +166,19 @@ public class UserServiceImpl implements UserService {
         return;
     }
 
+    @Override
+    public void updloadUserImage(HttpHeaders headers, MultipartFile file) throws BaseException {
+        User user;
+        try {
+            user = this.tokenService.getUserFromHttpHeaders(headers);
+        } catch (BaseException e) {
+            throw e;
+        }
+        try {
+            String url = "https://wanted-resources.s3.ap-northeast-2.amazonaws.com/profiles/" + user.getId() + ".jpg";
+            
+        } catch (Exception e) {
+            throw new BaseException(UNKNOWN_ERROR);
+        }
+    }
 }

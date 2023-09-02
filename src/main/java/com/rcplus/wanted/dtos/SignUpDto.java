@@ -39,7 +39,7 @@ public class SignUpDto {
                 .marketingPush(marketingPush == "Y")
                 .marketingSms(marketingSms == "Y")
                 .authority("USER")
-                .image("")
+                .image("https://wanted-resources.s3.ap-northeast-2.amazonaws.com/profiles/default.jpg")
                 .jobField(JobField.ALL.getName())
                 .jobSpecialties(JobSpecialty.선택안함.getName())
                 .build();

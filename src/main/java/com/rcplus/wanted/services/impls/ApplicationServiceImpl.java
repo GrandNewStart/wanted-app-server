@@ -125,7 +125,6 @@ public class ApplicationServiceImpl implements ApplicationService{
         }
         Company company = companyOpt.get();
         boolean isRecruiter = company.getUserId() == user.getId();
-        System.out.println("---> " + company.getUserId() + ", " + user.getId());
         if (!ApplicationStatus.allValues().contains(request.getStatus())) {
             throw new BaseException(INVALID_APPLICATION_STATUS);
         }

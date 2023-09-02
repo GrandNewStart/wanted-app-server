@@ -80,10 +80,9 @@ public class RecruitmentServiceImpl implements RecruitmentService{
         } catch (BaseException e) {
             throw e;
         }
-        
         Optional<Company> companyOpt = this.companyRepository.findByUserId(user.getId());
         if (companyOpt.isEmpty()) {
-            throw new BaseException(COMPANY_NOT_FOUND);
+            throw new BaseException(NO_AUTHORITY);
         }
         Company company = companyOpt.get();
         if (company.getId() != request.getCompanyId()) {

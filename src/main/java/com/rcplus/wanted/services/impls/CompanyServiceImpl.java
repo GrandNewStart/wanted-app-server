@@ -60,19 +60,10 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public GetCompanyInfoDto.Response getCompany(HttpHeaders headers, Long companyId) throws BaseException {
-        User user;
-        try {
-            user = this.tokenService.getUserFromHttpHeaders(headers);
-        } catch (BaseException e) {
-            throw e;
-        }
+    public GetCompanyInfoDto.Response getCompany(Long companyId) throws BaseException {
         Optional<Company> company = this.companyRepository.findById(companyId);
         if (company.isEmpty()) {
             throw new BaseException(COMPANY_NOT_FOUND);
-        }
-        if (company.get().getUserId() != user.getId()) {
-            throw new BaseException(NO_AUTHORITY);
         }
         return GetCompanyInfoDto.Response.from(company.get());
     }

@@ -16,6 +16,7 @@ public class GetUserInfoDto {
         private Long id;
         private String email;
         private String name;
+        private String image;
         @JsonProperty("country_code")
         private String countryCode;
         @JsonProperty("phone_number")
@@ -32,6 +33,7 @@ public class GetUserInfoDto {
                 user.getId(),
                 user.getEmail(),
                 user.getName(),
+                user.getImage(),
                 user.getCountryCode(),
                 user.getPhoneNumber(),
                 user.getMarketingEmail(),

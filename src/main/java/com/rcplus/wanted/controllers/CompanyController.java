@@ -28,9 +28,9 @@ public class CompanyController {
     private CompanyService companyService;
 
     @GetMapping("/companies")
-    public ResponseEntity<BaseResponse> getCompany(@RequestHeader HttpHeaders headers, @RequestParam("id") Long id) {
+    public ResponseEntity<BaseResponse> getCompany(@RequestParam("id") Long id) {
         try {
-            GetCompanyInfoDto.Response data = this.companyService.getCompany(headers, id);
+            GetCompanyInfoDto.Response data = this.companyService.getCompany(id);
             return new ResponseEntity<BaseResponse>(new BaseResponse(data), HttpStatus.OK);
         } catch (BaseException e) {
             return new ResponseEntity<BaseResponse>(new BaseResponse(e.getStatus()), e.getStatus().getStatus());

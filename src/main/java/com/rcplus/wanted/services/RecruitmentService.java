@@ -1,53 +1,22 @@
 package com.rcplus.wanted.services;
 
+import java.util.List;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import com.rcplus.wanted.configs.BaseException;
-import com.rcplus.wanted.models.Recruitment;
+import com.rcplus.wanted.dtos.DeleteRecruitmentDto;
+import com.rcplus.wanted.dtos.PostRecruitmentDto;
+import com.rcplus.wanted.dtos.RecruitmentDto;
 
 @Service
 public interface RecruitmentService {
-    public Recruitment getRecruitmentById(Long recruitmentId);
-    public void applyRecruitmentById(Long userId, Long recruitmentId) throws BaseException;
-    public int getLike(Long recruitmentId);
-    public void addLike(Long recruitmentId, Long userId) throws BaseException;
-    public void deleteLike(Long recruitmentId, Long userId) throws BaseException;
-
+    public List<RecruitmentDto> getRecruitments();
+    public RecruitmentDto getRecruitment(Long recruitmentId) throws BaseException;
+    public PostRecruitmentDto.Response addRecruitment(HttpHeaders headers, PostRecruitmentDto.Request request) throws BaseException;
+    public void deleteRecruitment(HttpHeaders headers, DeleteRecruitmentDto.Request request) throws BaseException;
+    public int getLikeCount(Long recruitmentId);
+    public void addLike(HttpHeaders headers, Long recruitmentId) throws BaseException;
+    public void deleteLike(HttpHeaders headers, Long recruitmentId) throws BaseException;
 }
-
-
-
-
-
-
-
-
-
-    // @Autowired
-    // private RecruitmentRepository recruitmentRepository;
-    // private UserRepository userRepository;
-    // private CompanyRepository companyRepository;
-    // private LikeRepository likeRepository;
-    // private ApplicationRepository applicationRepository;
-
-    // public RecruitmentLoadDto.Response getRecruitmentById(Long recruitmentId){
-        
-        
-    //     Recruitment recruitment = recruitmentRepository.findById(recruitmentId).orElseThrow();
-    //     Company company = companyRepository.findById(recruitment.getCompanyId()).orElseThrow();
-    //     User user = userRepository.findById(company.getUserId()).orElseThrow();
-    //     long likeCnt = likeRepository.countByCompanyId(recruitmentId);
-
-    //     return RecruitmentLoadDto.Response.builder()
-    //         .title(recruitment.getTitle())
-    //         .description(recruitment.getDescription())
-    //         .uploadDate(recruitment.getUploadDate())
-    //         .dueDate(recruitment.getDueDate())
-    //         .address(recruitment.getAddress())
-    //         .companyName(company.getName())
-    //         .imageUrl(company.getImage())
-    //         .jobSpecialities(recruitment.getJobSpecialities())
-    //         .like(likeCnt)
-    //         .build();
-    // }
-

@@ -5,8 +5,6 @@ import org.springframework.http.HttpHeaders;
 import com.rcplus.wanted.configs.BaseException;
 import com.rcplus.wanted.dtos.GetUserInfoDto;
 import com.rcplus.wanted.dtos.GetUserSpecialtiesDto;
-import com.rcplus.wanted.dtos.LogInDto;
-import com.rcplus.wanted.dtos.RefreshTokenDto;
 import com.rcplus.wanted.dtos.SignOutDto;
 import com.rcplus.wanted.dtos.SignUpDto;
 import com.rcplus.wanted.dtos.UpdateSpecialtiesDto;

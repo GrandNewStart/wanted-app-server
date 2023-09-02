@@ -72,7 +72,7 @@ public class CompanyServiceImpl implements CompanyService {
             throw new BaseException(COMPANY_NOT_FOUND);
         }
         if (company.get().getUserId() != user.getId()) {
-            throw new BaseException(INVALID_USER_JWT);
+            throw new BaseException(NO_AUTHORITY);
         }
         return GetCompanyInfoDto.Response.from(company.get());
     }
@@ -93,13 +93,13 @@ public class CompanyServiceImpl implements CompanyService {
             throw new BaseException(COMPANY_NOT_FOUND);
         }
         if (company.get().getUserId() != user.getId()) {
-            throw new BaseException(INVALID_USER_JWT);
+            throw new BaseException(NO_AUTHORITY);
         }
         if (company.get().getUserId() != request.getUserId()) {
-            throw new BaseException(INVALID_USER_JWT);
+            throw new BaseException(NO_AUTHORITY);
         }
         if (!user.getPassword().equals(request.getPassword())) {
-            throw new BaseException(INVALID_USER_JWT);
+            throw new BaseException(NO_AUTHORITY);
         }
         this.companyRepository.delete(company.get());
     }

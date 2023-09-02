@@ -8,13 +8,19 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name = "recruitment")
+@Entity(name = "recruitments")
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-public class Recruitment{
+@Builder
+public class Recruitment {
 
     @Id
     @GeneratedValue
@@ -29,6 +35,8 @@ public class Recruitment{
 
     @Column(name = "job_specialities")
     private List<String> jobSpecialities;
+
+    private String image;
 
     private String title;
 
@@ -45,10 +53,12 @@ public class Recruitment{
 
     private String address;
 
-
-
-
-
-
+    @Override
+    public String toString() {
+        return "Recruitment [id=" + id + ", companyId=" + companyId + ", jobField=" + jobField + ", jobSpecialities="
+                + jobSpecialities + ", image=" + image + ", title=" + title + ", description=" + description
+                + ", uploadDate=" + uploadDate + ", updateDate=" + updateDate + ", dueDate=" + dueDate + ", address="
+                + address + "]";
+    }
     
 }

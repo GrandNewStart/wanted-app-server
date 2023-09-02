@@ -25,6 +25,8 @@ public class GetCompanyInfoDto {
         @JsonProperty("business_reg_code")
         private String businessRegCode;
 
+        private String image;
+
         private String nation;
 
         private String region;
@@ -46,6 +48,7 @@ public class GetCompanyInfoDto {
                 .id(company.getId())
                 .userId(company.getUserId())
                 .name(company.getName())
+                .image(company.getImage())
                 .businessRegCode(company.getBusinessRegCode())
                 .nation(company.getNation())
                 .region(company.getRegion())

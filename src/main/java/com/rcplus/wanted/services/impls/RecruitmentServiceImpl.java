@@ -11,20 +11,16 @@ import org.springframework.stereotype.Service;
 
 import com.rcplus.wanted.configs.BaseException;
 import com.rcplus.wanted.configs.jwt.TokenService;
-import com.rcplus.wanted.dtos.ApplicationDto;
 import com.rcplus.wanted.dtos.DeleteRecruitmentDto;
 import com.rcplus.wanted.dtos.PostRecruitmentDto;
 import com.rcplus.wanted.dtos.RecruitmentDto;
-import com.rcplus.wanted.models.Application;
 import com.rcplus.wanted.models.Company;
 import com.rcplus.wanted.models.Like;
 import com.rcplus.wanted.models.Recruitment;
 import com.rcplus.wanted.models.User;
-import com.rcplus.wanted.repositories.ApplicationRepository;
 import com.rcplus.wanted.repositories.CompanyRepository;
 import com.rcplus.wanted.repositories.LikeRepository;
 import com.rcplus.wanted.repositories.RecruitmentRepository;
-import com.rcplus.wanted.services.ApplicationService;
 import com.rcplus.wanted.services.RecruitmentService;
 
 @Service
@@ -38,12 +34,6 @@ public class RecruitmentServiceImpl implements RecruitmentService{
 
     @Autowired
     private CompanyRepository companyRepository;
-
-    @Autowired
-    private ApplicationService applicationService;
-
-    @Autowired
-    private ApplicationRepository applicationRepository;
 
     @Autowired
     private LikeRepository likeRepository;

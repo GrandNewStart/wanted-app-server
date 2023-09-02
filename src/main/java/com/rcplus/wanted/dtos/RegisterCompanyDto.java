@@ -44,6 +44,7 @@ public class RegisterCompanyDto {
                 .industry(industry)
                 .nation(nation)
                 .region(region)
+                .image("https://wanted-resources.s3.ap-northeast-2.amazonaws.com/companies/default.jpg")
                 .employeeCount(employeeCount)
                 .marketingEmail(marketingEmail)
                 .marketingPush(marketingPush)
